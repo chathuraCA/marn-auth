@@ -4,10 +4,13 @@ import About from "./Pages/About";
 import Singin from "./Pages/Singin";
 import Singup from "./Pages/Singup";
 import Profile from "./Pages/Profile";
-
+import Header from "./Components/Header";
 export default function App() {
   return (
     <BrowserRouter>
+{/** Header */}
+
+<Header/>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
