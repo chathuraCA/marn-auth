@@ -1,6 +1,7 @@
 import User from "../models/user.model.js";
 import bcryptjs from 'bcryptjs';
-export const singup =async(req,res)=>{
+import { errorHandler } from "../utils/error.js";
+export const singup =async(req,res,next)=>{
     const{username,email,password}=req.body;
     const hashpassword=bcryptjs.hashSync(password,10);
     
@@ -9,7 +10,7 @@ export const singup =async(req,res)=>{
     await newUser.save();
     res.status(201).json({message:"User created sucsessfull"});
   }catch(error){
-res.status(500).json(error.message);
+    next(errorHandler(500,'bla bla'));
   }
   
    
