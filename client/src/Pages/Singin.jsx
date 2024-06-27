@@ -1,20 +1,22 @@
 import React, { useState } from "react";
 import { Link,useNavigate} from "react-router-dom";
+import { signInStart,singInSuccess,signInFailure } from "../redux/user/userSlice.js";
+import { useDispatch, useSelector } from "react-redux";
+
 export default function Singup() {
   const [formData, setFormData] = useState({});
-  const [error,setError]=useState(false);
-  const [loading,setLoading]=useState(false);
-  
+  const{loading,error}=useSelector((state)=>state.user);
 
 
 const navigate=useNavigate();
+const dispatch=useDispatch();
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
  const handleSubmit=async(e)=>{
   e.preventDefault();
   try{
-    setLoading(true);
+    dispatch(signInStart());
     const res=await fetch('/api/auth/singin',{
       method:'POST',
       headers:{
@@ -23,16 +25,19 @@ const navigate=useNavigate();
       body:JSON.stringify(formData),
     });
     const data=await res.json();
-    setLoading(false);
+    dispatch(singInSuccess(data));
     if(data.success===false){
-      setError(true);
+      console.log(data.message);
+      dispatch(signInFailure(data));
       return;
     }
+     dispatch(singInSuccess(data));
     navigate('/');
-    setError(false);
+    
   }catch(error){
-    setLoading(false);
-    setError(true);
+    
+    dispatch(signInFailure(error));
+    
   }
 
  }
@@ -66,7 +71,7 @@ const navigate=useNavigate();
           <span className="text-blue-500">Sign In</span>
         </Link>
       </div>
-      <p className="text-red-500 m-3">{error && 'Something went wrong'}</p>
+      <p className="text-red-500 m-3">{error ? error.message|| 'Something went wrong':''}</p>
     </div>
   );
 }
